@@ -23,16 +23,16 @@ const Editor = () => {
         placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="text-4xl font-bold border-none outline-none mb-8 placeholder-gray-300 focus:ring-0"
+        className="text-4xl font-bold border-none outline-none mb-8 placeholder-gray-300 focus:ring-0 bg-transparent text-primary"
       />
       <div 
+        className="prose prose-lg max-w-none focus:outline-none text-primary"
         contentEditable
-        className="prose prose-lg max-w-none focus:outline-none"
-        placeholder="Tell your story..."
         onInput={(e) => setContent(e.currentTarget.textContent || '')}
+        dangerouslySetInnerHTML={{ __html: 'Tell your story...' }}
       />
       <div className="fixed bottom-8 right-8">
-        <Button onClick={handleInkrypt} className="bg-green-500 hover:bg-green-600 text-white rounded-full px-6 py-3 shadow-lg transition-all duration-200">
+        <Button onClick={handleInkrypt} className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 py-3 shadow-lg transition-all duration-200">
           <CloudUpload className="mr-2 h-5 w-5" /> Publish
         </Button>
       </div>
