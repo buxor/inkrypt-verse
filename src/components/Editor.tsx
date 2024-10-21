@@ -139,13 +139,13 @@ const Editor = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4">
+    <div className="max-w-3xl mx-auto">
       <Input
         type="text"
         placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="text-4xl font-bold border-none outline-none mb-8 placeholder-gray-300 focus:ring-0 bg-transparent text-primary"
+        className="text-4xl font-bold border-none outline-none mb-8 placeholder-gray-300 focus:ring-0 bg-transparent text-primary px-0"
         style={{ border: 'none', boxShadow: 'none' }}
       />
       <MenuBar editor={editor} />
@@ -156,7 +156,7 @@ const Editor = () => {
         />
         {editor && editor.isEmpty && (
           <div 
-            className="absolute top-0 left-0 text-gray-400 pointer-events-none p-2"
+            className="absolute top-0 left-0 text-gray-400 pointer-events-none p-0"
             onClick={() => editor.commands.focus()}
           >
             Start writing...
