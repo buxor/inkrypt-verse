@@ -18,12 +18,12 @@ const Index = () => {
     const storedAddress = localStorage.getItem('walletAddress');
     if (storedAddress) {
       setAddress(storedAddress);
-    }
 
-    // Check if there's a draft
-    const draftTitle = localStorage.getItem('draftTitle');
-    const draftContent = localStorage.getItem('draftContent');
-    setHasDraft(!!draftTitle || !!draftContent);
+      // Only check for drafts if the user is logged in
+      const draftTitle = localStorage.getItem('draftTitle');
+      const draftContent = localStorage.getItem('draftContent');
+      setHasDraft(!!draftTitle || !!draftContent);
+    }
   }, []);
 
   const handleConnect = async () => {
@@ -91,7 +91,7 @@ const Index = () => {
             <Button onClick={handleStartWriting} className="bg-primary text-primary-foreground hover:bg-primary/90">
               <BookOpen className="mr-2 h-4 w-4" /> Start Writing
             </Button>
-            {hasDraft && (
+            {address && hasDraft && (
               <Button onClick={handleContinueDraft} variant="outline" className="ml-4">
                 <Edit className="mr-2 h-4 w-4" /> Continue Draft
               </Button>
