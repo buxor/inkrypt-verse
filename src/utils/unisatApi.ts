@@ -48,6 +48,7 @@ export const getPaymentDetails = async (orderId: string) => {
     return {
       amount: orderDetails.amount,
       address: orderDetails.payAddress,
+      psbtBase64: orderDetails.psbtBase64, // Assuming the API returns a PSBT in base64 format
     };
   } catch (error) {
     console.error('Error getting payment details:', error);
@@ -55,7 +56,7 @@ export const getPaymentDetails = async (orderId: string) => {
   }
 };
 
-export const makePaymentWithWallet = async (orderId: string) => {
+export const makePaymentWithWallet = async (orderId: string): Promise<{ success: boolean; txid?: string }> => {
   try {
     const paymentDetails = await getPaymentDetails(orderId);
     
@@ -65,7 +66,7 @@ export const makePaymentWithWallet = async (orderId: string) => {
           type: BitcoinNetworkType.Mainnet,
         },
         message: 'Sign transaction for Inkrypt inscription',
-        psbtHex: paymentDetails.psbtHex, // Assuming the API returns a PSBT hex
+        psbtBase64: paymentDetails.psbtBase64, // Assuming the API returns a PSBT in base64 format
         broadcast: true,
         inputsToSign: [
           {
