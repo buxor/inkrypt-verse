@@ -66,7 +66,7 @@ export const makePaymentWithWallet = async (orderId: string): Promise<{ success:
           type: BitcoinNetworkType.Mainnet,
         },
         message: 'Sign transaction for Inkrypt inscription',
-        psbtBase64: paymentDetails.psbtBase64, // Assuming the API returns a PSBT in base64 format
+        psbtBase64: paymentDetails.psbtBase64,
         broadcast: true,
         inputsToSign: [
           {
