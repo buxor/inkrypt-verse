@@ -5,10 +5,9 @@ import Editor from '@/components/Editor';
 
 const EditorPage = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+    <div className="min-h-screen flex flex-col bg-white text-gray-900">
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Create New Article</h1>
         <Editor />
       </main>
       <Footer />

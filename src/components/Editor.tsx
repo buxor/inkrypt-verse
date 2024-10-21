@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { CloudUpload } from 'lucide-react';
@@ -18,23 +17,23 @@ const Editor = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-3xl mx-auto px-4">
       <Input
         type="text"
-        placeholder="Article Title"
+        placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="text-2xl font-bold"
+        className="text-4xl font-bold border-none outline-none mb-8 placeholder-gray-300 focus:ring-0"
       />
-      <Textarea
-        placeholder="Write your article here..."
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        className="min-h-[400px] text-lg"
+      <div 
+        contentEditable
+        className="prose prose-lg max-w-none focus:outline-none"
+        placeholder="Tell your story..."
+        onInput={(e) => setContent(e.currentTarget.textContent || '')}
       />
-      <div className="flex justify-end">
-        <Button onClick={handleInkrypt} className="bg-primary text-primary-foreground hover:bg-primary/90">
-          <CloudUpload className="mr-2 h-4 w-4" /> Inkrypt
+      <div className="fixed bottom-8 right-8">
+        <Button onClick={handleInkrypt} className="bg-green-500 hover:bg-green-600 text-white rounded-full px-6 py-3 shadow-lg transition-all duration-200">
+          <CloudUpload className="mr-2 h-5 w-5" /> Publish
         </Button>
       </div>
     </div>
