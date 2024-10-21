@@ -149,18 +149,20 @@ const Editor = () => {
         style={{ border: 'none', boxShadow: 'none' }}
       />
       <MenuBar editor={editor} />
-      <EditorContent 
-        editor={editor} 
-        className="mt-4 focus:outline-none relative"
-      />
-      {editor && editor.isEmpty && (
-        <div 
-          className="absolute top-[150px] left-4 text-gray-400 pointer-events-none"
-          onClick={() => editor.commands.focus()}
-        >
-          Start writing...
-        </div>
-      )}
+      <div className="relative mt-4">
+        <EditorContent 
+          editor={editor} 
+          className="focus:outline-none"
+        />
+        {editor && editor.isEmpty && (
+          <div 
+            className="absolute top-0 left-0 text-gray-400 pointer-events-none p-2"
+            onClick={() => editor.commands.focus()}
+          >
+            Start writing...
+          </div>
+        )}
+      </div>
       {editor && (
         <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
           <Button
