@@ -49,7 +49,7 @@ const AccountPage = () => {
     setDrafts([]);
   };
 
-  const handleNewPost = () => {
+  const handleNewInkrypt = () => {
     localStorage.removeItem('draftTitle');
     localStorage.removeItem('draftContent');
     navigate('/editor');
@@ -59,7 +59,7 @@ const AccountPage = () => {
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
       <main className="flex-grow container mx-auto px-4 py-16">
-        <h1 className="text-4xl font-bold mb-8">My Account</h1>
+        <h1 className="text-4xl font-bold mb-8">Account</h1>
         {address && (
           <p className="text-lg mb-8">
             Connected Address: {address}
@@ -67,9 +67,9 @@ const AccountPage = () => {
         )}
         <section className="mb-12">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold">My Drafts</h2>
-            <Button onClick={handleNewPost} variant="outline" size="sm">
-              <PlusCircle className="mr-2 h-4 w-4" /> New Post
+            <h2 className="text-2xl font-semibold">Drafts</h2>
+            <Button onClick={handleNewInkrypt} variant="outline" size="sm">
+              <PlusCircle className="mr-2 h-4 w-4" /> New Inkrypt
             </Button>
           </div>
           {drafts.length > 0 ? (
@@ -98,7 +98,7 @@ const AccountPage = () => {
           )}
         </section>
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4">My Published Posts</h2>
+          <h2 className="text-2xl font-semibold mb-4">Published Posts</h2>
           {publishedPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {publishedPosts.map((post) => (
@@ -116,9 +116,6 @@ const AccountPage = () => {
             <p>You haven't published any posts yet.</p>
           )}
         </section>
-        <Button onClick={handleNewPost} className="bg-primary text-primary-foreground hover:bg-primary/90">
-          Create New Post
-        </Button>
       </main>
       <Footer />
     </div>
