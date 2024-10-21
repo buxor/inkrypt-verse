@@ -35,6 +35,16 @@ export const getOrderStatus = async (orderId: string) => {
   }
 };
 
+export const getPaymentDetails = async (orderId: string) => {
+  try {
+    const response = await axiosInstance.get(`/inscribe/order/${orderId}/payment`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting payment details:', error);
+    throw error;
+  }
+};
+
 export const refundOrder = async (orderId: string) => {
   try {
     const response = await axiosInstance.post('/inscribe/refund', { orderId });

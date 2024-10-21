@@ -10,10 +10,13 @@ import { MenuBar } from './EditorComponents/MenuBar';
 import { SlashCommands } from './EditorComponents/SlashCommands';
 import { useNavigate } from 'react-router-dom';
 import { createInscriptionOrder } from '../utils/unisatApi';
+import PaymentModal from './PaymentModal';
 
 const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
   const [title, setTitle] = useState(initialTitle);
   const [isSaving, setIsSaving] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [orderId, setOrderId] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -65,7 +68,8 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
       const order = await createInscriptionOrder(content, 'text/plain', walletAddress);
 
       if (order && order.orderId) {
-        localStorage.setItem('lastInscriptionOrderId', order.orderId);
+        setOrderId(order.orderId);
+        setShowPaymentModal(true);
 
         toast({
           title: "Inscription Order Created",
@@ -73,10 +77,6 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
         });
 
         console.log('Inscription order created:', order);
-        
-        // Here you would typically redirect to a payment page or show payment instructions
-        // For this example, we'll just navigate to the account page
-        navigate('/account');
       } else {
         throw new Error('Failed to create inscription order');
       }
@@ -88,22 +88,6 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
         variant: "destructive",
       });
     }
-
-    // Keep the existing local storage logic for drafts
-    const posts = JSON.parse(localStorage.getItem('posts') || '[]');
-    const newPost = {
-      id: Date.now().toString(),
-      title,
-      content: editor?.getHTML(),
-      date: new Date().toISOString(),
-      address: walletAddress,
-    };
-    posts.push(newPost);
-    localStorage.setItem('posts', JSON.stringify(posts));
-
-    // Clear the draft after publishing
-    localStorage.removeItem('draftTitle');
-    localStorage.removeItem('draftContent');
   };
 
   const handleSaveDraft = () => {
@@ -203,6 +187,15 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
           <CloudUpload className="mr-2 h-5 w-5" /> Inkrypt
         </Button>
       </div>
+      {showPaymentModal && orderId && (
+        <PaymentModal 
+          orderId={orderId} 
+          onClose={() => {
+            setShowPaymentModal(false);
+            navigate('/account');
+          }} 
+        />
+      )}
     </div>
   );
 };
