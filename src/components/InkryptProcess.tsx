@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { createInscriptionOrder, getOrderStatus, getPaymentDetails } from '../utils/unisatApi';
 import PaymentModal from './PaymentModal';
+import { Loader2 } from 'lucide-react';
 
 interface InkryptProcessProps {
   title: string;
@@ -12,11 +13,12 @@ interface InkryptProcessProps {
 }
 
 const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose }) => {
-  const [step, setStep] = useState<'disclaimer' | 'payment' | 'status'>('disclaimer');
+  const [step, setStep] = useState<'disclaimer' | 'loading' | 'payment' | 'status'>('disclaimer');
   const [orderId, setOrderId] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleConfirm = async () => {
+    setStep('loading');
     const walletAddress = localStorage.getItem('walletAddress');
     if (!walletAddress) {
       toast({
@@ -24,6 +26,7 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
         description: "Please connect your wallet before inscribing.",
         variant: "destructive",
       });
+      setStep('disclaimer');
       return;
     }
 
@@ -54,6 +57,7 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
         description: "There was an error creating the inscription. Please try again.",
         variant: "destructive",
       });
+      setStep('disclaimer');
     }
   };
 
@@ -64,6 +68,7 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
           <DialogTitle>Inkrypt Your Content</DialogTitle>
           <DialogDescription>
             {step === 'disclaimer' && "Inscribe your content to the Bitcoin blockchain."}
+            {step === 'loading' && "Creating your inscription order..."}
             {step === 'payment' && "Complete the payment to finalize your inscription."}
             {step === 'status' && "Checking the status of your inscription."}
           </DialogDescription>
@@ -83,6 +88,12 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
               <Button onClick={handleConfirm}>Confirm & Proceed</Button>
             </DialogFooter>
           </>
+        )}
+        {step === 'loading' && (
+          <div className="flex justify-center items-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin" />
+            <span className="ml-2">Creating inscription order...</span>
+          </div>
         )}
         {step === 'payment' && orderId && (
           <PaymentModal 
