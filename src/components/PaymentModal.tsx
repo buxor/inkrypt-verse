@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { getPaymentDetails, getOrderStatus } from '@/utils/unisatApi';
 import { useToast } from "@/components/ui/use-toast";
+import { getPaymentDetails, getOrderStatus } from '@/utils/unisatApi';
 
 interface PaymentModalProps {
   orderId: string;
@@ -52,24 +51,20 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ orderId, onClose }) => {
   };
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Complete Your Payment</DialogTitle>
-        </DialogHeader>
-        {paymentDetails ? (
-          <div>
-            <p>Amount: {paymentDetails.amount} BTC</p>
-            <p>Address: {paymentDetails.address}</p>
-            <img src={`data:image/png;base64,${paymentDetails.qrcode}`} alt="Payment QR Code" />
-            <p>Status: {orderStatus}</p>
-          </div>
-        ) : (
-          <p>Loading payment details...</p>
-        )}
-        <Button onClick={onClose}>Close</Button>
-      </DialogContent>
-    </Dialog>
+    <div className="p-4">
+      <h2 className="text-lg font-semibold mb-4">Complete Your Payment</h2>
+      {paymentDetails ? (
+        <div>
+          <p className="mb-2">Amount: {paymentDetails.amount} BTC</p>
+          <p className="mb-2">Address: {paymentDetails.address}</p>
+          <img src={`data:image/png;base64,${paymentDetails.qrcode}`} alt="Payment QR Code" className="mb-4" />
+          <p className="mb-4">Status: {orderStatus}</p>
+          <Button onClick={onClose}>Close</Button>
+        </div>
+      ) : (
+        <p>Loading payment details...</p>
+      )}
+    </div>
   );
 };
 

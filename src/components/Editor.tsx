@@ -9,14 +9,12 @@ import { CloudUpload, Save } from 'lucide-react';
 import { MenuBar } from './EditorComponents/MenuBar';
 import { SlashCommands } from './EditorComponents/SlashCommands';
 import { useNavigate } from 'react-router-dom';
-import { createInscriptionOrder } from '../utils/unisatApi';
-import PaymentModal from './PaymentModal';
+import InkryptProcess from './InkryptProcess';
 
 const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
   const [title, setTitle] = useState(initialTitle);
   const [isSaving, setIsSaving] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [orderId, setOrderId] = useState<string | null>(null);
+  const [showInkryptProcess, setShowInkryptProcess] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -46,48 +44,8 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
     return () => clearTimeout(saveTimeout);
   }, [title, editor]);
 
-  const handleInkrypt = async () => {
-    const walletAddress = localStorage.getItem('walletAddress');
-    if (!walletAddress) {
-      toast({
-        title: "Wallet Not Connected",
-        description: "Please connect your wallet before inscribing.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const content = JSON.stringify({
-        title,
-        body: editor?.getHTML(),
-        date: new Date().toISOString(),
-        address: walletAddress,
-      });
-
-      const order = await createInscriptionOrder(content, 'text/plain', walletAddress);
-
-      if (order && order.orderId) {
-        setOrderId(order.orderId);
-        setShowPaymentModal(true);
-
-        toast({
-          title: "Inscription Order Created",
-          description: "Your content has been prepared for inscription. Please complete the payment to finalize.",
-        });
-
-        console.log('Inscription order created:', order);
-      } else {
-        throw new Error('Failed to create inscription order');
-      }
-    } catch (error) {
-      console.error('Error creating inscription:', error);
-      toast({
-        title: "Inscription Failed",
-        description: "There was an error creating the inscription. Please try again.",
-        variant: "destructive",
-      });
-    }
+  const handleInkrypt = () => {
+    setShowInkryptProcess(true);
   };
 
   const handleSaveDraft = () => {
@@ -187,13 +145,11 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
           <CloudUpload className="mr-2 h-5 w-5" /> Inkrypt
         </Button>
       </div>
-      {showPaymentModal && orderId && (
-        <PaymentModal 
-          orderId={orderId} 
-          onClose={() => {
-            setShowPaymentModal(false);
-            navigate('/account');
-          }} 
+      {showInkryptProcess && (
+        <InkryptProcess
+          title={title}
+          content={editor?.getHTML() || ''}
+          onClose={() => setShowInkryptProcess(false)}
         />
       )}
     </div>
