@@ -67,7 +67,7 @@ const Header = () => {
 
   const isHomePage = location.pathname === '/';
   const logoSrc = isHomePage ? '/inkrypt-full-logo.svg' : '/inkrypt-icon.svg';
-  const logoClass = isHomePage ? 'h-8 w-auto max-w-[200px]' : 'h-8 w-8';
+  const logoClass = isHomePage ? 'h-12 w-auto max-w-[250px]' : 'h-12 w-12';
 
   return (
     <header className="border-b">
