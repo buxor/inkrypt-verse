@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, PlusCircle } from 'lucide-react';
 
 interface Post {
   id: string;
@@ -49,6 +49,12 @@ const AccountPage = () => {
     setDrafts([]);
   };
 
+  const handleNewPost = () => {
+    localStorage.removeItem('draftTitle');
+    localStorage.removeItem('draftContent');
+    navigate('/editor');
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
@@ -60,7 +66,12 @@ const AccountPage = () => {
           </p>
         )}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4">My Drafts</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold">My Drafts</h2>
+            <Button onClick={handleNewPost} variant="outline" size="sm">
+              <PlusCircle className="mr-2 h-4 w-4" /> New Post
+            </Button>
+          </div>
           {drafts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {drafts.map((draft) => (
@@ -105,7 +116,7 @@ const AccountPage = () => {
             <p>You haven't published any posts yet.</p>
           )}
         </section>
-        <Button onClick={() => navigate('/editor')} className="bg-primary text-primary-foreground hover:bg-primary/90">
+        <Button onClick={handleNewPost} className="bg-primary text-primary-foreground hover:bg-primary/90">
           Create New Post
         </Button>
       </main>

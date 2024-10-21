@@ -15,6 +15,9 @@ const Index = () => {
   const handleStartWriting = async () => {
     const storedAddress = localStorage.getItem('walletAddress');
     if (storedAddress) {
+      // Clear any existing draft before navigating to the editor
+      localStorage.removeItem('draftTitle');
+      localStorage.removeItem('draftContent');
       navigate('/editor');
     } else {
       try {
