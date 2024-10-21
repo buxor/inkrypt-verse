@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { LogIn, LogOut } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { getAddress, BitcoinNetworkType } from 'sats-connect';
+import { Link, useLocation } from 'react-router-dom';
+import { getAddress, BitcoinNetworkType, AddressPurpose } from 'sats-connect';
 
 const Header = () => {
   const { toast } = useToast();
   const [address, setAddress] = useState<string | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const storedAddress = localStorage.getItem('walletAddress');
@@ -20,7 +21,7 @@ const Header = () => {
     try {
       const getAddressOptions = {
         payload: {
-          purposes: ['ordinals', 'payment'],
+          purposes: ['ordinals', 'payment'] as AddressPurpose[],
           message: 'Address for Inkrypt',
           network: {
             type: BitcoinNetworkType.Mainnet
@@ -64,10 +65,16 @@ const Header = () => {
     });
   };
 
+  const isHomePage = location.pathname === '/';
+  const logoSrc = isHomePage ? '/inkrypt-full-logo.svg' : '/inkrypt-icon.svg';
+  const logoClass = isHomePage ? 'h-10' : 'h-8';
+
   return (
     <header className="border-b">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold text-primary">Inkrypt</Link>
+        <Link to="/" className="flex items-center">
+          <img src={logoSrc} alt="Inkrypt" className={`${logoClass} mx-auto object-cover`} />
+        </Link>
         <nav className="flex items-center space-x-4">
           {address && (
             <Link to="/account" className="text-sm text-primary hover:underline">
