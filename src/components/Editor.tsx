@@ -9,6 +9,7 @@ import { CloudUpload, Save } from 'lucide-react';
 import { MenuBar } from './EditorComponents/MenuBar';
 import { SlashCommands } from './EditorComponents/SlashCommands';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
   const [title, setTitle] = useState(initialTitle);
@@ -45,7 +46,7 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
     return () => clearTimeout(saveTimeout);
   }, [title, editor]);
 
-  const handleInkrypt = () => {
+  const handleInkrypt = async () => {
     const walletAddress = localStorage.getItem('walletAddress');
     if (!walletAddress) {
       toast({
@@ -56,8 +57,51 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
       return;
     }
 
-    // In a real app, you would send the post to a backend here
-    // For now, we'll just store it in localStorage
+    try {
+      // Prepare the content for inscription
+      const content = JSON.stringify({
+        title,
+        body: editor?.getHTML(),
+        date: new Date().toISOString(),
+        address: walletAddress,
+      });
+
+      // Call the UniSat API to create an inscription
+      const response = await axios.post('https://open-api.unisat.io/v1/inscribe/create', {
+        content,
+        contentType: 'text/plain',
+        receiveAddress: walletAddress,
+      }, {
+        headers: {
+          'Authorization': 'Bearer 1e99b7f91b8f082ece273c187a1784519f90c3ad554cc4c4b9c4bbd1b30d7485'
+        }
+      });
+
+      if (response.data && response.data.orderId) {
+        // Store the orderId for later use
+        localStorage.setItem('lastInscriptionOrderId', response.data.orderId);
+
+        toast({
+          title: "Inscription Created",
+          description: "Your content has been prepared for inscription. Please complete the payment to finalize.",
+        });
+
+        // Here you would typically redirect to a payment page or show payment instructions
+        // For now, we'll just log the order details
+        console.log('Inscription order created:', response.data);
+      } else {
+        throw new Error('Failed to create inscription order');
+      }
+    } catch (error) {
+      console.error('Error creating inscription:', error);
+      toast({
+        title: "Inscription Failed",
+        description: "There was an error creating the inscription. Please try again.",
+        variant: "destructive",
+      });
+    }
+
+    // Keep the existing local storage logic
     const posts = JSON.parse(localStorage.getItem('posts') || '[]');
     const newPost = {
       id: Date.now().toString(),
@@ -73,10 +117,6 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
     localStorage.removeItem('draftTitle');
     localStorage.removeItem('draftContent');
 
-    toast({
-      title: "Post Published",
-      description: "Your article has been successfully published!",
-    });
     navigate('/account');
   };
 
