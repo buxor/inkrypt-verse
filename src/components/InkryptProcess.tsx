@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { createInscriptionOrder, getOrderStatus, makePaymentWithWallet } from '../utils/unisatApi';
-import PaymentModal from './PaymentModal';
+import { createInscriptionOrder, getOrderStatus } from '../utils/unisatApi';
 import { Loader2 } from 'lucide-react';
+import QRCode from 'qrcode.react';
 
 interface InkryptProcessProps {
   title: string;
@@ -16,6 +16,8 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
   const [step, setStep] = useState<'disclaimer' | 'loading' | 'payment' | 'status'>('disclaimer');
   const [orderId, setOrderId] = useState<string | null>(null);
   const [orderStatus, setOrderStatus] = useState<string | null>(null);
+  const [paymentAddress, setPaymentAddress] = useState<string | null>(null);
+  const [paymentAmount, setPaymentAmount] = useState<number | null>(null);
   const { toast } = useToast();
 
   const handleConfirm = async () => {
@@ -44,6 +46,8 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
       if (order && order.orderId) {
         setOrderId(order.orderId);
         setOrderStatus(order.status);
+        setPaymentAddress(order.payAddress);
+        setPaymentAmount(order.amount);
         setStep('payment');
         toast({
           title: "Inscription Order Created",
@@ -60,32 +64,6 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
         variant: "destructive",
       });
       setStep('disclaimer');
-    }
-  };
-
-  const handlePayment = async () => {
-    if (!orderId) return;
-
-    setStep('loading');
-    try {
-      const result = await makePaymentWithWallet(orderId);
-      if (result.success) {
-        setStep('status');
-        toast({
-          title: "Payment Successful",
-          description: `Payment completed. Transaction ID: ${result.txid}`,
-        });
-      } else {
-        throw new Error('Payment failed');
-      }
-    } catch (error) {
-      console.error('Error making payment:', error);
-      toast({
-        title: "Payment Failed",
-        description: "There was an error processing your payment. Please try again.",
-        variant: "destructive",
-      });
-      setStep('payment');
     }
   };
 
@@ -124,7 +102,7 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
           <DialogDescription>
             {step === 'disclaimer' && "Inscribe your content to the Bitcoin blockchain."}
             {step === 'loading' && "Processing your request..."}
-            {step === 'payment' && "Complete the payment to finalize your inscription."}
+            {step === 'payment' && "Scan the QR code to complete the payment."}
             {step === 'status' && "Checking the status of your inscription."}
           </DialogDescription>
         </DialogHeader>
@@ -150,12 +128,13 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
             <span className="ml-2">Processing...</span>
           </div>
         )}
-        {step === 'payment' && orderId && (
-          <PaymentModal 
-            orderId={orderId} 
-            onClose={() => setStep('status')}
-            onPayment={handlePayment}
-          />
+        {step === 'payment' && paymentAddress && paymentAmount && (
+          <div className="py-4 flex flex-col items-center">
+            <p className="mb-4">Scan the QR code or send {paymentAmount} sats to:</p>
+            <QRCode value={paymentAddress} size={200} />
+            <p className="mt-4 text-sm break-all">{paymentAddress}</p>
+            <p className="mt-4">Status: {orderStatus}</p>
+          </div>
         )}
         {step === 'status' && (
           <div className="py-4">

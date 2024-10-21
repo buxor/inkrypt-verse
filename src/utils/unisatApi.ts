@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { signTransaction, SignTransactionOptions, BitcoinNetworkType } from 'sats-connect';
 
 const API_BASE_URL = 'https://open-api.unisat.io/v2';
 const API_KEY = '1e99b7f91b8f082ece273c187a1784519f90c3ad554cc4c4b9c4bbd1b30d7485';
@@ -38,54 +37,6 @@ export const getOrderStatus = async (orderId: string) => {
     return response.data.data;
   } catch (error) {
     console.error('Error getting order status:', error);
-    throw error;
-  }
-};
-
-export const getPaymentDetails = async (orderId: string) => {
-  try {
-    const orderDetails = await getOrderStatus(orderId);
-    return {
-      amount: orderDetails.amount,
-      address: orderDetails.payAddress,
-      psbtBase64: orderDetails.psbtBase64, // Assuming the API returns a PSBT in base64 format
-    };
-  } catch (error) {
-    console.error('Error getting payment details:', error);
-    throw error;
-  }
-};
-
-export const makePaymentWithWallet = async (orderId: string): Promise<{ success: boolean; txid?: string }> => {
-  try {
-    const paymentDetails = await getPaymentDetails(orderId);
-    
-    const signPsbtOptions: SignTransactionOptions = {
-      payload: {
-        network: {
-          type: BitcoinNetworkType.Mainnet,
-        },
-        message: 'Sign transaction for Inkrypt inscription',
-        psbtBase64: paymentDetails.psbtBase64,
-        broadcast: true,
-        inputsToSign: [
-          {
-            address: paymentDetails.address,
-            signingIndexes: [0], // Adjust if needed
-          },
-        ],
-      },
-      onFinish: (response) => {
-        return { success: true, txid: response.txId };
-      },
-      onCancel: () => {
-        throw new Error('Transaction signing cancelled');
-      },
-    };
-
-    return await signTransaction(signPsbtOptions);
-  } catch (error) {
-    console.error('Error making payment with wallet:', error);
     throw error;
   }
 };
