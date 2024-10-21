@@ -20,7 +20,7 @@ const Header = () => {
     try {
       const getAddressOptions = {
         payload: {
-          purposes: ['ordinals', 'payment'] as const,
+          purposes: ['ordinals', 'payment'],
           message: 'Address for Inkrypt',
           network: {
             type: BitcoinNetworkType.Mainnet
