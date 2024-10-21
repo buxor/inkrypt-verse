@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 py-4 text-center text-gray-400">
+    <footer className="border-t py-6 text-center text-muted-foreground">
       <p>&copy; 2024 Inkrypt. All rights reserved.</p>
     </footer>
   );

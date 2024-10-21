@@ -9,15 +9,15 @@ const ArticleList = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {articles.map((article) => (
-        <Card key={article.id} className="bg-gray-700 text-white">
+        <Card key={article.id} className="bg-card text-card-foreground hover:shadow-lg transition-shadow">
           <CardHeader>
-            <CardTitle>{article.title}</CardTitle>
+            <CardTitle className="text-lg font-semibold">{article.title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-300">By {article.author}</p>
-            <p className="text-sm text-gray-400">{article.date}</p>
+            <p className="text-sm text-muted-foreground">By {article.author}</p>
+            <p className="text-sm text-muted-foreground">{article.date}</p>
           </CardContent>
         </Card>
       ))}

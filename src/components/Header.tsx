@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { LogIn } from 'lucide-react';
 
 const Header = () => {
   const { toast } = useToast();
@@ -13,12 +14,12 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-gray-800 py-4">
-      <div className="container mx-auto px-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-yellow-500">Inkrypt</h1>
+    <header className="border-b">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-primary">Inkrypt</h1>
         <nav>
-          <Button onClick={handleConnect} variant="outline" className="text-yellow-500 border-yellow-500 hover:bg-yellow-500 hover:text-black">
-            Connect Wallet
+          <Button onClick={handleConnect} variant="outline" className="text-primary border-primary hover:bg-primary hover:text-primary-foreground">
+            <LogIn className="mr-2 h-4 w-4" /> Connect Wallet
           </Button>
         </nav>
       </div>
