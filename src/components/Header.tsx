@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { LogIn, LogOut } from 'lucide-react';
+import { LogIn, LogOut, Infinity } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { getAddress, BitcoinNetworkType, AddressPurpose } from 'sats-connect';
 
@@ -73,7 +73,11 @@ const Header = () => {
     <header className="border-b">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link to="/" className="flex items-center">
-          <img src={logoSrc} alt="Inkrypt" className={`${logoClass} mx-auto object-contain`} />
+          {isHomePage ? (
+            <img src={logoSrc} alt="Inkrypt" className={`${logoClass} mx-auto object-contain`} />
+          ) : (
+            <Infinity className={`${logoClass} text-[#FF9900]`} />
+          )}
         </Link>
         <nav className="flex items-center space-x-4">
           {address && (
