@@ -24,9 +24,13 @@ interface Draft {
   content: string;
 }
 
+interface Post extends Draft {
+  address: string;
+}
+
 const AccountPage = () => {
   const [address, setAddress] = useState<string | null>(null);
-  const [publishedPosts, setPublishedPosts] = useState<Draft[]>([]);
+  const [publishedPosts, setPublishedPosts] = useState<Post[]>([]);
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const navigate = useNavigate();
 
@@ -34,8 +38,10 @@ const AccountPage = () => {
     const storedAddress = localStorage.getItem('walletAddress');
     if (storedAddress) {
       setAddress(storedAddress);
-      // Fetch published posts (this should be replaced with actual API call in the future)
-      setPublishedPosts([]);
+      // Fetch published posts from localStorage (this should be replaced with actual API call in the future)
+      const allPosts = JSON.parse(localStorage.getItem('posts') || '[]');
+      const userPosts = allPosts.filter((post: Post) => post.address === storedAddress);
+      setPublishedPosts(userPosts);
       // Fetch drafts from localStorage
       const allDrafts = JSON.parse(localStorage.getItem('drafts') || '[]');
       const userDrafts = allDrafts.filter((draft: Draft & { address: string }) => draft.address === storedAddress);
@@ -134,7 +140,7 @@ const AccountPage = () => {
                     <CardTitle>{post.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground">Published on {post.date}</p>
+                    <p className="text-sm text-muted-foreground">Published on {new Date(post.date).toLocaleDateString()}</p>
                   </CardContent>
                 </Card>
               ))}
