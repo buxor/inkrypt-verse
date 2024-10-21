@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { createInscriptionOrder, getOrderStatus } from '../utils/unisatApi';
 import { Loader2 } from 'lucide-react';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface InkryptProcessProps {
   title: string;
@@ -131,9 +131,13 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
         {step === 'payment' && paymentAddress && paymentAmount && (
           <div className="py-4 flex flex-col items-center">
             <p className="mb-4">Scan the QR code or send {paymentAmount} sats to:</p>
-            <QRCode value={paymentAddress} size={200} />
+            <QRCodeSVG 
+              value={`bitcoin:${paymentAddress}?amount=${paymentAmount / 100000000}`} 
+              size={200} 
+            />
             <p className="mt-4 text-sm break-all">{paymentAddress}</p>
-            <p className="mt-4">Status: {orderStatus}</p>
+            <p className="mt-4">Amount: {paymentAmount} sats</p>
+            <p className="mt-2">Status: {orderStatus}</p>
           </div>
         )}
         {step === 'status' && (
