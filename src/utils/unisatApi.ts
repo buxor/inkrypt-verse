@@ -40,13 +40,3 @@ export const getOrderStatus = async (orderId: string) => {
     throw error;
   }
 };
-
-export const refundOrder = async (orderId: string) => {
-  try {
-    const response = await axiosInstance.post('/inscribe/refund', { orderId });
-    return response.data;
-  } catch (error) {
-    console.error('Error refunding order:', error);
-    throw error;
-  }
-};

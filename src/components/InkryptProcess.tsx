@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { createInscriptionOrder, getOrderStatus } from '../utils/unisatApi';
@@ -121,10 +121,9 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
                 <li>The inscription process requires a payment in Bitcoin.</li>
               </ul>
             </div>
-            <DialogFooter>
-              <Button onClick={onClose} variant="outline">Cancel</Button>
+            <div className="flex justify-end">
               <Button onClick={handleConfirm}>Confirm & Proceed</Button>
-            </DialogFooter>
+            </div>
           </>
         )}
         {step === 'loading' && (
