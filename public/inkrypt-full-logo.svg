@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 100">
-  <path d="M0 50C0 22.4 22.4 0 50 0s50 22.4 50 50-22.4 50-50 50S0 77.6 0 50zm80 0c0-16.6-13.4-30-30-30s-30 13.4-30 30 13.4 30 30 30 30-13.4 30-30z" fill="#FF6600"/>
-  <path d="M120 20h20v60h-20zm40 0h20v60h-20zm40 0h60v15h-40v15h40v15h-40v15h40v15h-60zm80 0h60v15h-20v45h-20V35h-20zm80 0h60v15h-40v15h40v15h-40v15h40v15h-60z" fill="#000000"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50">
+  <path d="M10 25C10 17.268 16.268 11 24 11s14 6.268 14 14-6.268 14-14 14S10 32.732 10 25z" fill="none" stroke="#FF9900" stroke-width="2"/>
+  <path d="M24 11C31.732 11 38 17.268 38 25S31.732 39 24 39 10 32.732 10 25" fill="none" stroke="#FF9900" stroke-width="2"/>
+  <text x="50" y="32" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#000000">Inkrypt</text>
 </svg>
