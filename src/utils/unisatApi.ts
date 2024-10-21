@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { signTransaction, SignTransactionOptions, BitcoinNetworkType } from 'sats-connect';
 
 const API_BASE_URL = 'https://open-api.unisat.io/v2';
-// Note: In a production environment, this API key should be stored securely on the server side
 const API_KEY = '1e99b7f91b8f082ece273c187a1784519f90c3ad554cc4c4b9c4bbd1b30d7485';
 
 const axiosInstance = axios.create({
@@ -59,14 +59,30 @@ export const makePaymentWithWallet = async (orderId: string) => {
   try {
     const paymentDetails = await getPaymentDetails(orderId);
     
-    // Use the UniSat API to make the payment
-    const response = await axiosInstance.post('/inscribe/pay', { orderId });
-    
-    if (response.data.status === 'success') {
-      return { success: true, txid: response.data.txid };
-    } else {
-      throw new Error('Payment failed');
-    }
+    const signPsbtOptions: SignTransactionOptions = {
+      payload: {
+        network: {
+          type: BitcoinNetworkType.Mainnet,
+        },
+        message: 'Sign transaction for Inkrypt inscription',
+        psbtHex: paymentDetails.psbtHex, // Assuming the API returns a PSBT hex
+        broadcast: true,
+        inputsToSign: [
+          {
+            address: paymentDetails.address,
+            signingIndexes: [0], // Adjust if needed
+          },
+        ],
+      },
+      onFinish: (response) => {
+        return { success: true, txid: response.txId };
+      },
+      onCancel: () => {
+        throw new Error('Transaction signing cancelled');
+      },
+    };
+
+    return await signTransaction(signPsbtOptions);
   } catch (error) {
     console.error('Error making payment with wallet:', error);
     throw error;
