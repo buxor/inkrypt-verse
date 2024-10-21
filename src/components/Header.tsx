@@ -71,10 +71,10 @@ const Header = () => {
   const logoClass = isHomePage ? 'h-16 w-auto max-w-[300px]' : 'h-12 w-12';
 
   return (
-    <header className="border-b h-20"> {/* Set a fixed height for the header */}
+    <header className="border-b h-20 sticky top-0 bg-background z-50"> {/* Added sticky, top-0, bg-background, and z-50 */}
       <div className="container mx-auto px-4 h-full flex justify-between items-center">
-        <Link to="/" className="flex items-center h-full"> {/* Ensure the link takes full height */}
-          <div className="flex items-center h-full"> {/* Ensure the logo container takes full height */}
+        <Link to="/" className="flex items-center h-full">
+          <div className="flex items-center h-full">
             {isHomePage ? (
               <>
                 <Infinity className={`${logoClass} text-[#FF9900]`} />
