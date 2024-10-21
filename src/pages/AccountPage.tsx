@@ -16,6 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import InscriptionStatus from '@/components/InscriptionStatus';
 
 interface Draft {
   id: string;
@@ -32,6 +33,7 @@ const AccountPage = () => {
   const [address, setAddress] = useState<string | null>(null);
   const [publishedPosts, setPublishedPosts] = useState<Post[]>([]);
   const [drafts, setDrafts] = useState<Draft[]>([]);
+  const [ongoingInscriptions, setOngoingInscriptions] = useState<any[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +48,10 @@ const AccountPage = () => {
       const allDrafts = JSON.parse(localStorage.getItem('drafts') || '[]');
       const userDrafts = allDrafts.filter((draft: Draft & { address: string }) => draft.address === storedAddress);
       setDrafts(userDrafts);
+
+      // Fetch ongoing inscriptions
+      const inscriptions = JSON.parse(localStorage.getItem('ongoingInscriptions') || '[]');
+      setOngoingInscriptions(inscriptions.filter((inscription: any) => inscription.address === storedAddress));
     } else {
       navigate('/');
     }
@@ -82,6 +88,18 @@ const AccountPage = () => {
             Connected Address: {address}
           </p>
         )}
+        
+        {ongoingInscriptions.length > 0 && (
+          <section className="mb-12">
+            <h2 className="text-2xl font-semibold mb-4">Ongoing Inscriptions</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {ongoingInscriptions.map((inscription) => (
+                <InscriptionStatus key={inscription.orderId} inscription={inscription} />
+              ))}
+            </div>
+          </section>
+        )}
+
         <section className="mb-12">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold">Drafts</h2>

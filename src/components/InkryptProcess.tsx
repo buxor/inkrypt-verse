@@ -49,6 +49,20 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
         setPaymentAddress(order.payAddress);
         setPaymentAmount(order.amount);
         setStep('payment');
+
+        // Store order information in localStorage
+        const ongoingInscriptions = JSON.parse(localStorage.getItem('ongoingInscriptions') || '[]');
+        ongoingInscriptions.push({
+          orderId: order.orderId,
+          status: order.status,
+          payAddress: order.payAddress,
+          amount: order.amount,
+          address: walletAddress,
+          title,
+          date: new Date().toISOString(),
+        });
+        localStorage.setItem('ongoingInscriptions', JSON.stringify(ongoingInscriptions));
+
         toast({
           title: "Inscription Order Created",
           description: "Your content has been prepared for inscription. Please complete the payment to finalize.",
