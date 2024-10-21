@@ -5,7 +5,8 @@ import Image from '@tiptap/extension-image';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { CloudUpload, Image as ImageIcon, Heading1, Heading2, Bold, Italic, List } from 'lucide-react';
+import { CloudUpload, Image as ImageIcon, Heading1, Heading2, Bold, Italic, List, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -106,6 +107,7 @@ const SlashCommands = ({ editor }) => {
 const Editor = () => {
   const [title, setTitle] = useState('');
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const editor = useEditor({
     extensions: [
@@ -125,6 +127,10 @@ const Editor = () => {
       title: "Inkrypt",
       description: "Article inscription feature coming soon!",
     });
+  };
+
+  const handleBack = () => {
+    navigate('/');
   };
 
   return (
@@ -158,9 +164,14 @@ const Editor = () => {
           </Button>
         </BubbleMenu>
       )}
+      <div className="fixed bottom-8 left-8">
+        <Button onClick={handleBack} variant="outline" className="rounded-full px-6 py-3 shadow-lg transition-all duration-200">
+          <ArrowLeft className="mr-2 h-5 w-5" /> Back
+        </Button>
+      </div>
       <div className="fixed bottom-8 right-8">
         <Button onClick={handleInkrypt} className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 py-3 shadow-lg transition-all duration-200">
-          <CloudUpload className="mr-2 h-5 w-5" /> Publish
+          <CloudUpload className="mr-2 h-5 w-5" /> Inkrypt
         </Button>
       </div>
     </div>
