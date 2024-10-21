@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { getPaymentDetails, getOrderStatus } from '@/utils/unisatApi';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface PaymentModalProps {
   orderId: string;
@@ -58,7 +58,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ orderId, onClose }) => {
         <div>
           <p className="mb-2">Amount: {paymentDetails.amount} sats</p>
           <p className="mb-2">Address: {paymentDetails.address}</p>
-          <QRCode value={`bitcoin:${paymentDetails.address}?amount=${paymentDetails.amount / 100000000}`} className="mb-4" />
+          <QRCodeSVG value={`bitcoin:${paymentDetails.address}?amount=${paymentDetails.amount / 100000000}`} className="mb-4" />
           <p className="mb-4">Status: {orderStatus}</p>
           <Button onClick={onClose}>Close</Button>
         </div>
