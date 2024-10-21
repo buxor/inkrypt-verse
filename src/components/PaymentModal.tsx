@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { getPaymentDetails, getOrderStatus } from '@/utils/unisatApi';
+import QRCode from 'qrcode.react';
 
 interface PaymentModalProps {
   orderId: string;
@@ -29,7 +30,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ orderId, onClose }) => {
     };
 
     fetchPaymentDetails();
-    const intervalId = setInterval(checkOrderStatus, 5000); // Check status every 5 seconds
+    const intervalId = setInterval(checkOrderStatus, 10000); // Check status every 10 seconds
 
     return () => clearInterval(intervalId);
   }, [orderId]);
@@ -38,7 +39,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ orderId, onClose }) => {
     try {
       const status = await getOrderStatus(orderId);
       setOrderStatus(status.status);
-      if (status.status === 'completed') {
+      if (status.status === 'minted' || status.status === 'closed') {
         toast({
           title: "Payment Completed",
           description: "Your inscription has been successfully created!",
@@ -55,9 +56,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ orderId, onClose }) => {
       <h2 className="text-lg font-semibold mb-4">Complete Your Payment</h2>
       {paymentDetails ? (
         <div>
-          <p className="mb-2">Amount: {paymentDetails.amount} BTC</p>
+          <p className="mb-2">Amount: {paymentDetails.amount} sats</p>
           <p className="mb-2">Address: {paymentDetails.address}</p>
-          <img src={`data:image/png;base64,${paymentDetails.qrcode}`} alt="Payment QR Code" className="mb-4" />
+          <QRCode value={`bitcoin:${paymentDetails.address}?amount=${paymentDetails.amount / 100000000}`} className="mb-4" />
           <p className="mb-4">Status: {orderStatus}</p>
           <Button onClick={onClose}>Close</Button>
         </div>

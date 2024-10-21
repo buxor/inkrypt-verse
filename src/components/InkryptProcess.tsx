@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { createInscriptionOrder, getOrderStatus, getPaymentDetails } from '../utils/unisatApi';
+import { createInscriptionOrder, getOrderStatus } from '../utils/unisatApi';
 import PaymentModal from './PaymentModal';
 import { Loader2 } from 'lucide-react';
 
@@ -15,6 +15,7 @@ interface InkryptProcessProps {
 const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose }) => {
   const [step, setStep] = useState<'disclaimer' | 'loading' | 'payment' | 'status'>('disclaimer');
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [orderStatus, setOrderStatus] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleConfirm = async () => {
@@ -42,6 +43,7 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
 
       if (order && order.orderId) {
         setOrderId(order.orderId);
+        setOrderStatus(order.status);
         setStep('payment');
         toast({
           title: "Inscription Order Created",
@@ -60,6 +62,33 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
       setStep('disclaimer');
     }
   };
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    if (orderId && (orderStatus === 'pending' || orderStatus === 'payment_notenough')) {
+      intervalId = setInterval(async () => {
+        try {
+          const status = await getOrderStatus(orderId);
+          setOrderStatus(status.status);
+          if (status.status === 'minted' || status.status === 'closed') {
+            clearInterval(intervalId);
+            toast({
+              title: "Inscription Completed",
+              description: "Your content has been successfully inscribed on the Bitcoin blockchain.",
+            });
+            onClose();
+          }
+        } catch (error) {
+          console.error('Error checking order status:', error);
+        }
+      }, 10000); // Check every 10 seconds
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [orderId, orderStatus, toast, onClose]);
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -104,9 +133,9 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
           />
         )}
         {step === 'status' && (
-          <div>
-            <p>Your inscription is being processed. Please wait...</p>
-            {/* Add more detailed status information here */}
+          <div className="py-4">
+            <p>Your inscription is being processed. Current status: {orderStatus}</p>
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mt-4" />
           </div>
         )}
       </DialogContent>
