@@ -34,7 +34,7 @@ export const SlashCommands = ({ editor }) => {
       {items.map((item, index) => (
         <button
           key={index}
-          onClick={() => item.command({ editor })}
+          onClick={() => item.command({ editor, range: editor.state.selection })}
           className="flex items-center space-x-2 px-2 py-1 hover:bg-gray-100 w-full text-left"
         >
           {item.icon}
