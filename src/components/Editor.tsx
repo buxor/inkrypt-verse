@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -33,6 +33,28 @@ const Editor = () => {
     },
   });
 
+  useEffect(() => {
+    // Load draft from localStorage when component mounts
+    const savedTitle = localStorage.getItem('draftTitle');
+    const savedContent = localStorage.getItem('draftContent');
+    if (savedTitle) setTitle(savedTitle);
+    if (savedContent && editor) editor.commands.setContent(savedContent);
+  }, [editor]);
+
+  useEffect(() => {
+    // Save draft to localStorage whenever title or content changes
+    const saveTimeout = setTimeout(() => {
+      if (title) localStorage.setItem('draftTitle', title);
+      if (editor) localStorage.setItem('draftContent', editor.getHTML());
+      toast({
+        title: "Draft Saved",
+        description: "Your draft has been automatically saved.",
+      });
+    }, 2000); // Save after 2 seconds of inactivity
+
+    return () => clearTimeout(saveTimeout);
+  }, [title, editor, toast]);
+
   const handleInkrypt = () => {
     const walletAddress = localStorage.getItem('walletAddress');
     if (!walletAddress) {
@@ -55,6 +77,10 @@ const Editor = () => {
     };
     posts.push(newPost);
     localStorage.setItem('posts', JSON.stringify(posts));
+
+    // Clear the draft after publishing
+    localStorage.removeItem('draftTitle');
+    localStorage.removeItem('draftContent');
 
     toast({
       title: "Post Published",
