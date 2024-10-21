@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Editor from '@/components/Editor';
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,9 +20,31 @@ import {
 const EditorPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const draft = location.state?.draft;
 
   const handleDiscard = () => {
+    const walletAddress = localStorage.getItem('walletAddress');
+    if (!walletAddress) {
+      toast({
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet before discarding a draft.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (draft?.id) {
+      const allDrafts = JSON.parse(localStorage.getItem('drafts') || '[]');
+      const updatedAllDrafts = allDrafts.filter((d: any) => !(d.id === draft.id && d.address === walletAddress));
+      localStorage.setItem('drafts', JSON.stringify(updatedAllDrafts));
+
+      toast({
+        title: "Draft Discarded",
+        description: "Your draft has been successfully discarded.",
+      });
+    }
+
     navigate('/account');
   };
 
