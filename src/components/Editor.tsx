@@ -151,9 +151,16 @@ const Editor = () => {
       <MenuBar editor={editor} />
       <EditorContent 
         editor={editor} 
-        className="mt-4 focus:outline-none"
-        placeholder="Tell your story..."
+        className="mt-4 focus:outline-none relative"
       />
+      {editor && editor.isEmpty && (
+        <div 
+          className="absolute top-[150px] left-4 text-gray-400 pointer-events-none"
+          onClick={() => editor.commands.focus()}
+        >
+          Start writing...
+        </div>
+      )}
       {editor && (
         <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
           <Button
