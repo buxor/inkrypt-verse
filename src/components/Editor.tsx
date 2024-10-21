@@ -12,6 +12,7 @@ import { SlashCommands } from './EditorComponents/SlashCommands';
 
 const Editor = () => {
   const [title, setTitle] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -46,14 +47,12 @@ const Editor = () => {
     const saveTimeout = setTimeout(() => {
       if (title) localStorage.setItem('draftTitle', title);
       if (editor) localStorage.setItem('draftContent', editor.getHTML());
-      toast({
-        title: "Draft Saved",
-        description: "Your draft has been automatically saved.",
-      });
+      setIsSaving(true);
+      setTimeout(() => setIsSaving(false), 1000); // Hide "Saving..." after 1 second
     }, 2000); // Save after 2 seconds of inactivity
 
     return () => clearTimeout(saveTimeout);
-  }, [title, editor, toast]);
+  }, [title, editor]);
 
   const handleInkrypt = () => {
     const walletAddress = localStorage.getItem('walletAddress');
@@ -143,7 +142,10 @@ const Editor = () => {
           <ArrowLeft className="mr-2 h-5 w-5" /> Back
         </Button>
       </div>
-      <div className="fixed bottom-8 right-8">
+      <div className="fixed bottom-8 right-8 flex items-center space-x-4">
+        {isSaving && (
+          <span className="text-sm text-gray-500">Saving...</span>
+        )}
         <Button onClick={handleInkrypt} className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 py-3 shadow-lg transition-all duration-200">
           <CloudUpload className="mr-2 h-5 w-5" /> Inkrypt
         </Button>
