@@ -114,11 +114,16 @@ const Editor = () => {
       StarterKit,
       Image,
     ],
-    content: '<p>Tell your story...</p>',
+    content: '',
     editorProps: {
       attributes: {
         class: 'prose prose-lg max-w-none focus:outline-none text-primary min-h-[300px]',
       },
+    },
+    onFocus: ({ editor }) => {
+      if (editor.isEmpty) {
+        editor.commands.setContent('<p></p>');
+      }
     },
   });
 
@@ -143,7 +148,11 @@ const Editor = () => {
         className="text-4xl font-bold border-none outline-none mb-8 placeholder-gray-300 focus:ring-0 bg-transparent text-primary"
       />
       <MenuBar editor={editor} />
-      <EditorContent editor={editor} />
+      <EditorContent 
+        editor={editor} 
+        className="mt-4 focus:outline-none"
+        placeholder="Tell your story..."
+      />
       {editor && (
         <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
           <Button
