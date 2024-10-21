@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { getPaymentDetails, getOrderStatus } from '@/utils/unisatApi';
-import { QRCodeSVG } from 'qrcode.react';
 
 interface PaymentModalProps {
   orderId: string;
   onClose: () => void;
+  onPayment: () => void;
 }
 
-const PaymentModal: React.FC<PaymentModalProps> = ({ orderId, onClose }) => {
+const PaymentModal: React.FC<PaymentModalProps> = ({ orderId, onClose, onPayment }) => {
   const [paymentDetails, setPaymentDetails] = useState<any>(null);
   const [orderStatus, setOrderStatus] = useState<string>('');
   const { toast } = useToast();
@@ -57,10 +57,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ orderId, onClose }) => {
       {paymentDetails ? (
         <div>
           <p className="mb-2">Amount: {paymentDetails.amount} sats</p>
-          <p className="mb-2">Address: {paymentDetails.address}</p>
-          <QRCodeSVG value={`bitcoin:${paymentDetails.address}?amount=${paymentDetails.amount / 100000000}`} className="mb-4" />
           <p className="mb-4">Status: {orderStatus}</p>
-          <Button onClick={onClose}>Close</Button>
+          <Button onClick={onPayment} className="w-full mb-2">Pay with Connected Wallet</Button>
+          <Button onClick={onClose} variant="outline" className="w-full">Close</Button>
         </div>
       ) : (
         <p>Loading payment details...</p>

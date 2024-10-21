@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { createInscriptionOrder, getOrderStatus } from '../utils/unisatApi';
+import { createInscriptionOrder, getOrderStatus, makePaymentWithWallet } from '../utils/unisatApi';
 import PaymentModal from './PaymentModal';
 import { Loader2 } from 'lucide-react';
 
@@ -60,6 +60,26 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
         variant: "destructive",
       });
       setStep('disclaimer');
+    }
+  };
+
+  const handlePayment = async () => {
+    if (!orderId) return;
+
+    try {
+      await makePaymentWithWallet(orderId);
+      setStep('status');
+      toast({
+        title: "Payment Initiated",
+        description: "Payment has been initiated. Please wait for confirmation.",
+      });
+    } catch (error) {
+      console.error('Error making payment:', error);
+      toast({
+        title: "Payment Failed",
+        description: "There was an error making the payment. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -127,9 +147,8 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
         {step === 'payment' && orderId && (
           <PaymentModal 
             orderId={orderId} 
-            onClose={() => {
-              setStep('status');
-            }}
+            onClose={() => setStep('status')}
+            onPayment={handlePayment}
           />
         )}
         {step === 'status' && (
