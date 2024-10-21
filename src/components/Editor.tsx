@@ -5,10 +5,10 @@ import Image from '@tiptap/extension-image';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { CloudUpload, Image as ImageIcon, Heading1, Heading2, Bold, Italic, List, ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { CloudUpload } from 'lucide-react';
 import { MenuBar } from './EditorComponents/MenuBar';
 import { SlashCommands } from './EditorComponents/SlashCommands';
+import { useNavigate } from 'react-router-dom';
 
 const Editor = () => {
   const [title, setTitle] = useState('');
@@ -88,10 +88,6 @@ const Editor = () => {
     navigate('/account');
   };
 
-  const handleBack = () => {
-    navigate('/');
-  };
-
   return (
     <div className="max-w-3xl mx-auto">
       <Input
@@ -137,11 +133,6 @@ const Editor = () => {
           </Button>
         </BubbleMenu>
       )}
-      <div className="fixed bottom-8 left-8">
-        <Button onClick={handleBack} variant="outline" className="rounded-full px-6 py-3 shadow-lg transition-all duration-200">
-          <ArrowLeft className="mr-2 h-5 w-5" /> Back
-        </Button>
-      </div>
       <div className="fixed bottom-8 right-8 flex items-center space-x-4">
         {isSaving && (
           <span className="text-sm text-gray-500">Saving...</span>
