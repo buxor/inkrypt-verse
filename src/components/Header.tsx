@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { LogIn, LogOut, Infinity } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { LogIn, LogOut, Infinity, PlusCircle } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { getAddress, BitcoinNetworkType, AddressPurpose } from 'sats-connect';
 
 const Header = () => {
   const { toast } = useToast();
   const [address, setAddress] = useState<string | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedAddress = localStorage.getItem('walletAddress');
@@ -65,6 +66,12 @@ const Header = () => {
     });
   };
 
+  const handleNewInkrypt = () => {
+    localStorage.removeItem('draftTitle');
+    localStorage.removeItem('draftContent');
+    navigate('/editor');
+  };
+
   const isHomePage = location.pathname === '/';
   const logoClass = isHomePage ? 'h-16 w-auto max-w-[300px]' : 'h-12 w-12';
 
@@ -82,6 +89,9 @@ const Header = () => {
           )}
         </Link>
         <nav className="flex items-center space-x-4">
+          <Button onClick={handleNewInkrypt} variant="outline" size="sm" className="text-primary border-primary hover:bg-primary hover:text-primary-foreground">
+            <PlusCircle className="mr-2 h-4 w-4" /> New Inkrypt
+          </Button>
           {address && (
             <Link to="/account" className="text-sm text-primary hover:underline">
               My Account
