@@ -146,6 +146,7 @@ const Editor = () => {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         className="text-4xl font-bold border-none outline-none mb-8 placeholder-gray-300 focus:ring-0 bg-transparent text-primary"
+        style={{ border: 'none', boxShadow: 'none' }}
       />
       <MenuBar editor={editor} />
       <EditorContent 
