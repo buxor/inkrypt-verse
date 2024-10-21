@@ -67,13 +67,13 @@ const Header = () => {
 
   const isHomePage = location.pathname === '/';
   const logoSrc = isHomePage ? '/inkrypt-full-logo.svg' : '/inkrypt-icon.svg';
-  const logoClass = isHomePage ? 'h-10' : 'h-8';
+  const logoClass = isHomePage ? 'h-8 w-auto' : 'h-8 w-8';
 
   return (
     <header className="border-b">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link to="/" className="flex items-center">
-          <img src={logoSrc} alt="Inkrypt" className={`${logoClass} mx-auto object-cover`} />
+          <img src={logoSrc} alt="Inkrypt" className={`${logoClass} mx-auto object-contain`} />
         </Link>
         <nav className="flex items-center space-x-4">
           {address && (
