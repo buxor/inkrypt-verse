@@ -61,7 +61,9 @@ const Index = () => {
   };
 
   const handleStartWriting = () => {
-    if (address) {
+    const storedAddress = localStorage.getItem('walletAddress');
+    if (storedAddress) {
+      setAddress(storedAddress);
       navigate('/editor');
     } else {
       handleConnect();
