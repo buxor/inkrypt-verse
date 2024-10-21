@@ -66,20 +66,26 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
   const handlePayment = async () => {
     if (!orderId) return;
 
+    setStep('loading');
     try {
-      await makePaymentWithWallet(orderId);
-      setStep('status');
-      toast({
-        title: "Payment Initiated",
-        description: "Payment has been initiated. Please wait for confirmation.",
-      });
+      const result = await makePaymentWithWallet(orderId);
+      if (result.success) {
+        setStep('status');
+        toast({
+          title: "Payment Successful",
+          description: `Payment completed. Transaction ID: ${result.txid}`,
+        });
+      } else {
+        throw new Error('Payment failed');
+      }
     } catch (error) {
       console.error('Error making payment:', error);
       toast({
         title: "Payment Failed",
-        description: "There was an error making the payment. Please try again.",
+        description: "There was an error processing your payment. Please try again.",
         variant: "destructive",
       });
+      setStep('payment');
     }
   };
 
@@ -117,7 +123,7 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
           <DialogTitle>Inkrypt Your Content</DialogTitle>
           <DialogDescription>
             {step === 'disclaimer' && "Inscribe your content to the Bitcoin blockchain."}
-            {step === 'loading' && "Creating your inscription order..."}
+            {step === 'loading' && "Processing your request..."}
             {step === 'payment' && "Complete the payment to finalize your inscription."}
             {step === 'status' && "Checking the status of your inscription."}
           </DialogDescription>
@@ -141,7 +147,7 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
         {step === 'loading' && (
           <div className="flex justify-center items-center py-8">
             <Loader2 className="h-8 w-8 animate-spin" />
-            <span className="ml-2">Creating inscription order...</span>
+            <span className="ml-2">Processing...</span>
           </div>
         )}
         {step === 'payment' && orderId && (

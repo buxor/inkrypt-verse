@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_BASE_URL = 'https://open-api.unisat.io/v2';
+// Note: In a production environment, this API key should be stored securely on the server side
 const API_KEY = '1e99b7f91b8f082ece273c187a1784519f90c3ad554cc4c4b9c4bbd1b30d7485';
 
 const axiosInstance = axios.create({
@@ -58,17 +59,14 @@ export const makePaymentWithWallet = async (orderId: string) => {
   try {
     const paymentDetails = await getPaymentDetails(orderId);
     
-    // Here we would typically interact with the wallet API to make the payment
-    // Since we don't have direct access to the UniSat wallet API, we'll simulate the payment
-    // In a real implementation, you would use the appropriate wallet API calls
+    // Use the UniSat API to make the payment
+    const response = await axiosInstance.post('/inscribe/pay', { orderId });
     
-    console.log(`Simulating payment of ${paymentDetails.amount} sats to ${paymentDetails.address}`);
-    
-    // Simulate a delay to represent the payment process
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // In a real implementation, you would check the transaction status and return appropriate information
-    return { success: true, txid: 'simulated_transaction_id' };
+    if (response.data.status === 'success') {
+      return { success: true, txid: response.data.txid };
+    } else {
+      throw new Error('Payment failed');
+    }
   } catch (error) {
     console.error('Error making payment with wallet:', error);
     throw error;
