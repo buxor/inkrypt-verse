@@ -4,15 +4,25 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Editor from '@/components/Editor';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Save, CloudUpload } from 'lucide-react';
+import { Save, CloudUpload } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const EditorPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleDiscard = () => {
-    // Implement discard logic here (e.g., show a confirmation dialog)
     navigate('/account');
   };
 
@@ -32,9 +42,25 @@ const EditorPage = () => {
       <main className="flex-grow container mx-auto px-4 py-16">
         <Editor />
         <div className="fixed bottom-8 left-8">
-          <Button onClick={handleDiscard} variant="outline" className="rounded-full px-6 py-3 shadow-lg transition-all duration-200">
-            <ArrowLeft className="mr-2 h-5 w-5" /> Discard
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" className="rounded-full px-6 py-3 shadow-lg transition-all duration-200">
+                Discard
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently discard your draft.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDiscard}>Discard</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
         <div className="fixed bottom-8 right-8 flex items-center space-x-4">
           <Button onClick={handleSaveDraft} className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-full px-6 py-3 shadow-lg transition-all duration-200">
