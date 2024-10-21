@@ -128,6 +128,18 @@ const Editor = () => {
   });
 
   const handleInkrypt = () => {
+    // Check if wallet is connected
+    const walletAddress = localStorage.getItem('walletAddress');
+    if (!walletAddress) {
+      toast({
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet before inscribing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Proceed with inscription logic
     toast({
       title: "Inkrypt",
       description: "Article inscription feature coming soon!",
