@@ -61,6 +61,10 @@ const AccountPage = () => {
     navigate('/editor');
   };
 
+  if (!address) {
+    return null; // or a loading spinner if you prefer
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />

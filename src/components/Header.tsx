@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { LogIn, LogOut, Infinity } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { getAddress, BitcoinNetworkType, AddressPurpose } from 'sats-connect';
 
 const Header = () => {
   const { toast } = useToast();
   const [address, setAddress] = useState<string | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedAddress = localStorage.getItem('walletAddress');
@@ -63,6 +64,7 @@ const Header = () => {
       title: "Wallet Disconnected",
       description: "Your wallet has been disconnected.",
     });
+    navigate('/');
   };
 
   const isHomePage = location.pathname === '/';
