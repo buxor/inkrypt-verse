@@ -10,7 +10,7 @@ import { MenuBar } from './EditorComponents/MenuBar';
 import { SlashCommands } from './EditorComponents/SlashCommands';
 import { useNavigate } from 'react-router-dom';
 
-const Editor = ({ initialTitle = '', initialContent = '' }) => {
+const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
   const [title, setTitle] = useState(initialTitle);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
@@ -82,16 +82,29 @@ const Editor = ({ initialTitle = '', initialContent = '' }) => {
   const handleSaveDraft = () => {
     const drafts = JSON.parse(localStorage.getItem('drafts') || '[]');
     const newDraft = {
-      id: Date.now().toString(),
+      id: draftId || Date.now().toString(),
       title,
       content: editor?.getHTML(),
       date: new Date().toISOString(),
     };
-    drafts.push(newDraft);
+
+    if (draftId) {
+      // Update existing draft
+      const draftIndex = drafts.findIndex(draft => draft.id === draftId);
+      if (draftIndex !== -1) {
+        drafts[draftIndex] = newDraft;
+      } else {
+        drafts.push(newDraft);
+      }
+    } else {
+      // Create new draft
+      drafts.push(newDraft);
+    }
+
     localStorage.setItem('drafts', JSON.stringify(drafts));
     toast({
-      title: "Draft Saved",
-      description: "Your draft has been saved successfully.",
+      title: draftId ? "Draft Updated" : "Draft Saved",
+      description: draftId ? "Your draft has been updated successfully." : "Your draft has been saved successfully.",
     });
     navigate('/account');
   };

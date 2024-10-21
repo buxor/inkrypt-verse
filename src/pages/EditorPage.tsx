@@ -29,7 +29,11 @@ const EditorPage = () => {
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
       <main className="flex-grow container mx-auto px-4 py-16">
-        <Editor initialTitle={draft?.title || ''} initialContent={draft?.content || ''} />
+        <Editor 
+          initialTitle={draft?.title || ''} 
+          initialContent={draft?.content || ''} 
+          draftId={draft?.id || null}
+        />
         <div className="fixed bottom-8 left-8">
           <AlertDialog>
             <AlertDialogTrigger asChild>
