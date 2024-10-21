@@ -64,6 +64,7 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
       title,
       content: editor?.getHTML(),
       date: new Date().toISOString().split('T')[0],
+      address: walletAddress,
     };
     posts.push(newPost);
     localStorage.setItem('posts', JSON.stringify(posts));
@@ -80,17 +81,28 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
   };
 
   const handleSaveDraft = () => {
+    const walletAddress = localStorage.getItem('walletAddress');
+    if (!walletAddress) {
+      toast({
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet before saving a draft.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const drafts = JSON.parse(localStorage.getItem('drafts') || '[]');
     const newDraft = {
       id: draftId || Date.now().toString(),
       title,
       content: editor?.getHTML(),
       date: new Date().toISOString(),
+      address: walletAddress,
     };
 
     if (draftId) {
       // Update existing draft
-      const draftIndex = drafts.findIndex(draft => draft.id === draftId);
+      const draftIndex = drafts.findIndex(draft => draft.id === draftId && draft.address === walletAddress);
       if (draftIndex !== -1) {
         drafts[draftIndex] = newDraft;
       } else {

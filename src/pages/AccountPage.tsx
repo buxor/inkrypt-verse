@@ -40,8 +40,9 @@ const AccountPage = () => {
         { id: '2', title: 'Thoughts on Bitcoin', date: '2024-03-16', content: '' },
       ]);
       // Fetch drafts from localStorage
-      const storedDrafts = JSON.parse(localStorage.getItem('drafts') || '[]');
-      setDrafts(storedDrafts);
+      const allDrafts = JSON.parse(localStorage.getItem('drafts') || '[]');
+      const userDrafts = allDrafts.filter((draft: Draft & { address: string }) => draft.address === storedAddress);
+      setDrafts(userDrafts);
     } else {
       navigate('/');
     }
@@ -52,9 +53,12 @@ const AccountPage = () => {
   };
 
   const handleDeleteDraft = (id: string) => {
+    const allDrafts = JSON.parse(localStorage.getItem('drafts') || '[]');
+    const updatedAllDrafts = allDrafts.filter((draft: Draft & { address: string }) => !(draft.id === id && draft.address === address));
+    localStorage.setItem('drafts', JSON.stringify(updatedAllDrafts));
+    
     const updatedDrafts = drafts.filter(draft => draft.id !== id);
     setDrafts(updatedDrafts);
-    localStorage.setItem('drafts', JSON.stringify(updatedDrafts));
   };
 
   const handleNewInkrypt = () => {
