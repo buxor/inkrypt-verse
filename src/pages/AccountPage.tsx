@@ -34,11 +34,8 @@ const AccountPage = () => {
     const storedAddress = localStorage.getItem('walletAddress');
     if (storedAddress) {
       setAddress(storedAddress);
-      // Fetch published posts (mock data for now)
-      setPublishedPosts([
-        { id: '1', title: 'My First Inkrypt Post', date: '2024-03-15', content: '' },
-        { id: '2', title: 'Thoughts on Bitcoin', date: '2024-03-16', content: '' },
-      ]);
+      // Fetch published posts (this should be replaced with actual API call in the future)
+      setPublishedPosts([]);
       // Fetch drafts from localStorage
       const allDrafts = JSON.parse(localStorage.getItem('drafts') || '[]');
       const userDrafts = allDrafts.filter((draft: Draft & { address: string }) => draft.address === storedAddress);
@@ -128,7 +125,7 @@ const AccountPage = () => {
           )}
         </section>
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4">Published Posts</h2>
+          <h2 className="text-2xl font-semibold mb-4">Inkrypted Posts</h2>
           {publishedPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {publishedPosts.map((post) => (
