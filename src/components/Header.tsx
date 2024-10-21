@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { LogIn, LogOut } from 'lucide-react';
@@ -9,21 +9,30 @@ const Header = () => {
   const { toast } = useToast();
   const [address, setAddress] = useState<string | null>(null);
 
+  useEffect(() => {
+    const storedAddress = localStorage.getItem('walletAddress');
+    if (storedAddress) {
+      setAddress(storedAddress);
+    }
+  }, []);
+
   const handleConnect = async () => {
     try {
       const getAddressOptions = {
         payload: {
-          purposes: ['payment'],
-          message: 'Address for receiving payments',
+          purposes: ['ordinals', 'payment'] as const,
+          message: 'Address for Inkrypt',
           network: {
-            type: BitcoinNetworkType.Testnet
+            type: BitcoinNetworkType.Mainnet
           },
         },
         onFinish: (response: { addresses: { address: string }[] }) => {
-          setAddress(response.addresses[0].address);
+          const newAddress = response.addresses[0].address;
+          setAddress(newAddress);
+          localStorage.setItem('walletAddress', newAddress);
           toast({
             title: "Wallet Connected",
-            description: `Connected with address: ${response.addresses[0].address.slice(0, 10)}...`,
+            description: `Connected with address: ${newAddress.slice(0, 10)}...`,
           });
         },
         onCancel: () => {
@@ -48,6 +57,7 @@ const Header = () => {
 
   const handleDisconnect = () => {
     setAddress(null);
+    localStorage.removeItem('walletAddress');
     toast({
       title: "Wallet Disconnected",
       description: "Your wallet has been disconnected.",
@@ -58,7 +68,12 @@ const Header = () => {
     <header className="border-b">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link to="/" className="text-2xl font-bold text-primary">Inkrypt</Link>
-        <nav>
+        <nav className="flex items-center space-x-4">
+          {address && (
+            <Link to="/account" className="text-sm text-primary hover:underline">
+              My Account
+            </Link>
+          )}
           {address ? (
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
