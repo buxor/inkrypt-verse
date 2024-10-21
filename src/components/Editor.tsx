@@ -5,13 +5,13 @@ import Image from '@tiptap/extension-image';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { CloudUpload } from 'lucide-react';
+import { CloudUpload, Save } from 'lucide-react';
 import { MenuBar } from './EditorComponents/MenuBar';
 import { SlashCommands } from './EditorComponents/SlashCommands';
 import { useNavigate } from 'react-router-dom';
 
-const Editor = () => {
-  const [title, setTitle] = useState('');
+const Editor = ({ initialTitle = '', initialContent = '' }) => {
+  const [title, setTitle] = useState(initialTitle);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const Editor = () => {
       StarterKit,
       Image,
     ],
-    content: '',
+    content: initialContent,
     editorProps: {
       attributes: {
         class: 'prose prose-lg max-w-none focus:outline-none text-primary min-h-[300px]',
@@ -35,21 +35,12 @@ const Editor = () => {
   });
 
   useEffect(() => {
-    // Load draft from localStorage when component mounts
-    const savedTitle = localStorage.getItem('draftTitle');
-    const savedContent = localStorage.getItem('draftContent');
-    if (savedTitle) setTitle(savedTitle);
-    if (savedContent && editor) editor.commands.setContent(savedContent);
-  }, [editor]);
-
-  useEffect(() => {
-    // Save draft to localStorage whenever title or content changes
     const saveTimeout = setTimeout(() => {
       if (title) localStorage.setItem('draftTitle', title);
       if (editor) localStorage.setItem('draftContent', editor.getHTML());
       setIsSaving(true);
-      setTimeout(() => setIsSaving(false), 1000); // Hide "Saving..." after 1 second
-    }, 2000); // Save after 2 seconds of inactivity
+      setTimeout(() => setIsSaving(false), 1000);
+    }, 2000);
 
     return () => clearTimeout(saveTimeout);
   }, [title, editor]);
@@ -84,6 +75,23 @@ const Editor = () => {
     toast({
       title: "Post Published",
       description: "Your article has been successfully published!",
+    });
+    navigate('/account');
+  };
+
+  const handleSaveDraft = () => {
+    const drafts = JSON.parse(localStorage.getItem('drafts') || '[]');
+    const newDraft = {
+      id: Date.now().toString(),
+      title,
+      content: editor?.getHTML(),
+      date: new Date().toISOString(),
+    };
+    drafts.push(newDraft);
+    localStorage.setItem('drafts', JSON.stringify(drafts));
+    toast({
+      title: "Draft Saved",
+      description: "Your draft has been saved successfully.",
     });
     navigate('/account');
   };
@@ -137,6 +145,9 @@ const Editor = () => {
         {isSaving && (
           <span className="text-sm text-gray-500">Saving...</span>
         )}
+        <Button onClick={handleSaveDraft} className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-full px-6 py-3 shadow-lg transition-all duration-200">
+          <Save className="mr-2 h-5 w-5" /> Save Draft
+        </Button>
         <Button onClick={handleInkrypt} className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 py-3 shadow-lg transition-all duration-200">
           <CloudUpload className="mr-2 h-5 w-5" /> Inkrypt
         </Button>

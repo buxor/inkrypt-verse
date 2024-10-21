@@ -6,17 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit, Trash2, PlusCircle } from 'lucide-react';
 
-interface Post {
+interface Draft {
   id: string;
   title: string;
   date: string;
-  content?: string;
+  content: string;
 }
 
 const AccountPage = () => {
   const [address, setAddress] = useState<string | null>(null);
-  const [publishedPosts, setPublishedPosts] = useState<Post[]>([]);
-  const [drafts, setDrafts] = useState<Post[]>([]);
+  const [publishedPosts, setPublishedPosts] = useState<Draft[]>([]);
+  const [drafts, setDrafts] = useState<Draft[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,33 +25,28 @@ const AccountPage = () => {
       setAddress(storedAddress);
       // Fetch published posts (mock data for now)
       setPublishedPosts([
-        { id: '1', title: 'My First Inkrypt Post', date: '2024-03-15' },
-        { id: '2', title: 'Thoughts on Bitcoin', date: '2024-03-16' },
+        { id: '1', title: 'My First Inkrypt Post', date: '2024-03-15', content: '' },
+        { id: '2', title: 'Thoughts on Bitcoin', date: '2024-03-16', content: '' },
       ]);
       // Fetch drafts from localStorage
-      const draftTitle = localStorage.getItem('draftTitle');
-      const draftContent = localStorage.getItem('draftContent');
-      if (draftTitle && draftContent) {
-        setDrafts([{ id: 'draft', title: draftTitle, date: new Date().toISOString().split('T')[0], content: draftContent }]);
-      }
+      const storedDrafts = JSON.parse(localStorage.getItem('drafts') || '[]');
+      setDrafts(storedDrafts);
     } else {
       navigate('/');
     }
   }, [navigate]);
 
-  const handleEditDraft = () => {
-    navigate('/editor');
+  const handleEditDraft = (draft: Draft) => {
+    navigate('/editor', { state: { draft } });
   };
 
-  const handleDeleteDraft = () => {
-    localStorage.removeItem('draftTitle');
-    localStorage.removeItem('draftContent');
-    setDrafts([]);
+  const handleDeleteDraft = (id: string) => {
+    const updatedDrafts = drafts.filter(draft => draft.id !== id);
+    setDrafts(updatedDrafts);
+    localStorage.setItem('drafts', JSON.stringify(updatedDrafts));
   };
 
   const handleNewInkrypt = () => {
-    localStorage.removeItem('draftTitle');
-    localStorage.removeItem('draftContent');
     navigate('/editor');
   };
 
@@ -80,12 +75,12 @@ const AccountPage = () => {
                     <CardTitle>{draft.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">Last edited on {draft.date}</p>
+                    <p className="text-sm text-muted-foreground mb-4">Last edited on {new Date(draft.date).toLocaleDateString()}</p>
                     <div className="flex space-x-2">
-                      <Button onClick={handleEditDraft} variant="outline" size="sm">
+                      <Button onClick={() => handleEditDraft(draft)} variant="outline" size="sm">
                         <Edit className="mr-2 h-4 w-4" /> Edit
                       </Button>
-                      <Button onClick={handleDeleteDraft} variant="outline" size="sm" className="text-destructive">
+                      <Button onClick={() => handleDeleteDraft(draft.id)} variant="outline" size="sm" className="text-destructive">
                         <Trash2 className="mr-2 h-4 w-4" /> Delete
                       </Button>
                     </div>
