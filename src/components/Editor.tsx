@@ -44,6 +44,12 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
     return () => clearTimeout(saveTimeout);
   }, [title, editor]);
 
+  const isContentEmpty = () => {
+    const content = editor?.getHTML() || '';
+    const strippedContent = content.replace(/<[^>]*>/g, '').trim();
+    return !strippedContent;
+  };
+
   const handleInkrypt = () => {
     // Check if title is empty or only whitespace
     if (!title || !title.trim()) {
@@ -56,9 +62,7 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
     }
 
     // Check if content is empty or only contains empty paragraphs
-    const content = editor?.getHTML() || '';
-    const strippedContent = content.replace(/<[^>]*>/g, '').trim();
-    if (!strippedContent) {
+    if (isContentEmpty()) {
       toast({
         title: "Empty Content",
         description: "Please add some content to your article before inscribing.",
@@ -163,7 +167,11 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
         <Button onClick={handleSaveDraft} className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-full px-6 py-3 shadow-lg transition-all duration-200">
           <Save className="mr-2 h-5 w-5" /> Save Draft
         </Button>
-        <Button onClick={handleInkrypt} className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 py-3 shadow-lg transition-all duration-200">
+        <Button 
+          onClick={handleInkrypt} 
+          className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 py-3 shadow-lg transition-all duration-200"
+          disabled={!title?.trim() || isContentEmpty()}
+        >
           <CloudUpload className="mr-2 h-5 w-5" /> Inkrypt
         </Button>
       </div>
