@@ -113,9 +113,10 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
     return btc.toFixed(8);
   };
 
+  // Updated Bitcoin URI format to be more compatible with different wallet implementations
   const formatBitcoinURI = (address: string, amount: number) => {
-    const btcAmount = formatBTCAmount(amount);
-    return `bitcoin:${address}?amount=${btcAmount}`;
+    // Using BIP21 format without additional parameters
+    return `bitcoin:${address}?amount=${formatBTCAmount(amount)}`;
   };
 
   return (
