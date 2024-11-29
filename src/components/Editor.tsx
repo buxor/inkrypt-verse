@@ -45,6 +45,28 @@ const Editor = ({ initialTitle = '', initialContent = '', draftId = null }) => {
   }, [title, editor]);
 
   const handleInkrypt = () => {
+    // Check if title is empty or only whitespace
+    if (!title || !title.trim()) {
+      toast({
+        title: "Missing Title",
+        description: "Please add a title to your article before inscribing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if content is empty or only contains empty paragraphs
+    const content = editor?.getHTML() || '';
+    const strippedContent = content.replace(/<[^>]*>/g, '').trim();
+    if (!strippedContent) {
+      toast({
+        title: "Empty Content",
+        description: "Please add some content to your article before inscribing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setShowInkryptProcess(true);
   };
 
