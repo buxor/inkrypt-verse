@@ -113,6 +113,11 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
     return btc.toFixed(8);
   };
 
+  const formatBitcoinURI = (address: string, amount: number) => {
+    const btcAmount = formatBTCAmount(amount);
+    return `bitcoin:${address}?amount=${btcAmount}`;
+  };
+
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -150,7 +155,7 @@ const InkryptProcess: React.FC<InkryptProcessProps> = ({ title, content, onClose
           <div className="py-4 flex flex-col items-center">
             <p className="mb-4">Scan the QR code or send payment to:</p>
             <QRCodeSVG 
-              value={`bitcoin:${paymentAddress}?amount=${formatBTCAmount(paymentAmount)}`} 
+              value={formatBitcoinURI(paymentAddress, paymentAmount)}
               size={200} 
             />
             <p className="mt-4 text-sm break-all">{paymentAddress}</p>
