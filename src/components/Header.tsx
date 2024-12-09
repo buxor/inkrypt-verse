@@ -71,17 +71,17 @@ const Header = () => {
   const logoClass = isHomePage ? 'h-16 w-auto max-w-[300px]' : 'h-12 w-12';
 
   return (
-    <header className="border-b h-20 sticky top-0 bg-background z-50"> {/* Added sticky, top-0, bg-background, and z-50 */}
+    <header className="border-b h-20 sticky top-0 bg-background z-50">
       <div className="container mx-auto px-4 h-full flex justify-between items-center">
         <Link to="/" className="flex items-center h-full">
           <div className="flex items-center h-full">
             {isHomePage ? (
               <>
-                <Infinity className={`${logoClass} text-[#FF9900]`} />
+                <Infinity className={`${logoClass} text-black`} />
                 <span className="ml-2 text-3xl font-bold">Inkrypt</span>
               </>
             ) : (
-              <Infinity className={`${logoClass} text-[#FF9900]`} />
+              <Infinity className={`${logoClass} text-black`} />
             )}
           </div>
         </Link>
